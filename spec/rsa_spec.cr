@@ -1,0 +1,38 @@
+require "spec"
+require "../src/openssl"
+
+describe OpenSSL::PKey::RSA do
+  it "should be able to generate RSA key" do
+    rsa = OpenSSL::PKey::RSA.generate(1024)
+    rsa.public_key?.should be_true
+    rsa.private_key?.should be_true
+    rsa.to_pem.match(/PRIVATE KEY/).should_not be_nil
+  end
+
+  it "should be able to encrypt and decrypt data" do
+    rsa = OpenSSL::PKey::RSA.generate(1024)
+    encrypted = rsa.private_encrypt "my secret"
+    decrypted = rsa.public_decrypt(encrypted)
+    String.new(decrypted).should eq("my secret")
+  end
+
+  it "should be able to get public key from private" do
+    rsa = OpenSSL::PKey::RSA.generate(1024)
+    pub_key = rsa.public_key
+
+    pub_key.private_key?.should be_false
+    expect_raises(OpenSSL::PKey::RSA::RSAError) do
+      pub_key.private_encrypt("my secret")
+    end
+  end
+
+  it "should be able to load RSA from pem" do
+    rsa = OpenSSL::PKey::RSA.generate(1024)
+    pem = StringIO.new
+    rsa.to_pem(pem)
+
+    new_rsa = OpenSSL::PKey::RSA.new(pem)
+    rsa.to_pem.should eq(new_rsa.to_pem)
+  end
+end
+
