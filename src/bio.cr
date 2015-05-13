@@ -21,6 +21,10 @@ class OpenSSL::BIO
     LibCrypto.bio_write(self, data, count)
   end
 
+  def reset
+    LibCrypto.bio_ctrl(self, LibCrypto::BIO_CTRL_RESET, 0_i64, nil)
+  end
+
   def finalize
     LibCrypto.bio_free_all(self)
   end

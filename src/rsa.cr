@@ -4,12 +4,19 @@ module OpenSSL
   class PKey::RSA < PKey
     class RSAError < PKeyError; end
 
-    def self.new(io: IO | String, password = nil)
+    def self.new(pem: String, password = nil)
+      self.new(StringIO.new(io), password)
+    end
+
+    def self.new(io: IO, password = nil)
       bio = BIO.new
-      io = StringIO.new(io) if io.is_a?(String)
       IO.copy(io, bio)
       # FIXME: password callback
       new(LibCrypto.pem_read_bio_privatekey(bio, nil, nil, nil), true)
+    end
+
+    def self.new(size: Int32)
+      self.generate(size)
     end
 
     def self.generate(size)
@@ -91,12 +98,6 @@ module OpenSSL
         LibCrypto.pem_write_bio_rsa_pubkey(bio, rsa)
       end
       IO.copy(bio, io)
-    end
-
-    def to_pem
-      io = StringIO.new
-      to_pem(io)
-      io.to_s
     end
 
     def to_text

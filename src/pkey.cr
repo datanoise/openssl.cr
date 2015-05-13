@@ -57,5 +57,11 @@ module OpenSSL
         raise PKeyError.new "Unable to verify"
       end
     end
+
+    def to_pem
+      io = StringIO.new
+      to_pem(io)
+      io.to_s
+    end
   end
 end

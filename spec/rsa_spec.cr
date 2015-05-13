@@ -9,10 +9,17 @@ describe OpenSSL::PKey::RSA do
     rsa.to_pem.match(/PRIVATE KEY/).should_not be_nil
   end
 
-  it "should be able to encrypt and decrypt data" do
+  it "should be able to private encrypt and public decrypt data" do
     rsa = OpenSSL::PKey::RSA.generate(1024)
     encrypted = rsa.private_encrypt "my secret"
     decrypted = rsa.public_decrypt(encrypted)
+    String.new(decrypted).should eq("my secret")
+  end
+
+  it "should be able to public encrypt and private decrypt data" do
+    rsa = OpenSSL::PKey::RSA.generate(1024)
+    encrypted = rsa.public_encrypt "my secret"
+    decrypted = rsa.private_decrypt(encrypted)
     String.new(decrypted).should eq("my secret")
   end
 
