@@ -40,7 +40,7 @@ module OpenSSL
       if LibCrypto.evp_signfinal(digest, slice, out len, self) == 0
         raise PKeyError.new "Unable to sign"
       end
-      String.new slice[0, len]
+      slice[0, len.to_i32]
     end
 
     def verify(digest, signature, data)
@@ -48,7 +48,7 @@ module OpenSSL
       signature = signature.to_slice
       LibCrypto.evp_digestinit_ex(digest, digest.to_unsafe_md, nil)
       LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.length))
-      case LibCrypto.evp_verifyfinal(digest, signature, signature.length, self)
+      case LibCrypto.evp_verifyfinal(digest, signature, signature.length.to_u32, self)
       when 0
         false
       when 1

@@ -34,5 +34,15 @@ describe OpenSSL::PKey::RSA do
     new_rsa = OpenSSL::PKey::RSA.new(pem)
     rsa.to_pem.should eq(new_rsa.to_pem)
   end
+
+  it "should be able to sign and verify data" do
+    rsa = OpenSSL::PKey::RSA.generate(1024)
+    digest = OpenSSL::Digest::SHA256.new
+    data = "my data"
+
+    signature = rsa.sign(digest, data)
+    rsa.verify(digest, signature, data).should be_true
+    rsa.verify(digest, signature[0, 10], data).should be_false
+  end
 end
 
