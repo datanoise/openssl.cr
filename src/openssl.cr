@@ -21,3 +21,4 @@ module OpenSSL
 end
 
 require "./*"
+require "./pkey/*"
