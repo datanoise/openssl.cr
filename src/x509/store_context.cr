@@ -10,7 +10,7 @@ class OpenSSL::X509::StoreContext
   end
 
   def certificate
-    LibCrypto.x509_store_ctx_get_current_cert(self)
+    Certificate.new LibCrypto.x509_store_ctx_get_current_cert(@ctx)
   end
 
   def to_unsafe

@@ -1,6 +1,6 @@
-require "./openssl"
+require "../openssl"
 
-class OpenSSL::BIO
+struct OpenSSL::MemBIO
   include IO
 
   class BIOError < OpenSSLError; end

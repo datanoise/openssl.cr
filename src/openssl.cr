@@ -1,4 +1,4 @@
-require "./lib_openssl"
+require "./lib/lib_ssl"
 
 module OpenSSL
   class OpenSSLError < Exception
@@ -20,6 +20,9 @@ module OpenSSL
   LibSSL.ssl_load_error_strings()
 end
 
-require "./*"
+require "./util/*"
+require "./digest/*"
+require "./bio/*"
 require "./pkey/*"
 require "./x509/*"
+require "./ssl/*"

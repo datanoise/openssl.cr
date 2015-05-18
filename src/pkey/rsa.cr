@@ -9,7 +9,7 @@ module OpenSSL
     end
 
     def self.new(io: IO, password = nil)
-      bio = BIO.new
+      bio = MemBIO.new
       IO.copy(io, bio)
       # FIXME: password callback
       new(LibCrypto.pem_read_bio_privatekey(bio, nil, nil, nil), true)
@@ -91,7 +91,7 @@ module OpenSSL
     end
 
     def to_pem(io)
-      bio = BIO.new
+      bio = MemBIO.new
       if private_key?
         LibCrypto.pem_write_bio_rsaprivatekey(bio, rsa, nil, nil, 0, nil, nil)
       else
@@ -101,7 +101,7 @@ module OpenSSL
     end
 
     def to_text
-      bio = BIO.new
+      bio = MemBIO.new
       LibCrypto.rsa_print(bio, rsa, 0)
       bio.to_string
     end

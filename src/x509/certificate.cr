@@ -17,7 +17,7 @@ module OpenSSL::X509
     end
 
     def name(flag = Flags::COMPAT : Flags)
-      bio = BIO.new
+      bio = MemBIO.new
       if LibCrypto.x509_name_print_ex(bio, self, 0, flag.value.to_u64) == 0
         raise X509Error.new
       end
@@ -43,7 +43,7 @@ module OpenSSL::X509
     end
 
     def self.from_pem(io)
-      bio = BIO.new
+      bio = MemBIO.new
       IO.copy(io, bio)
       x509 = LibCrypto.pem_read_bio_x509(bio, nil, nil, nil)
       new(x509)
@@ -90,7 +90,7 @@ module OpenSSL::X509
     end
 
     def to_pem(io)
-      bio = BIO.new
+      bio = MemBIO.new
       LibCrypto.pem_write_bio_x509(bio, self)
       IO.copy(bio, io)
     end
