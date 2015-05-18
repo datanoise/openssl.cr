@@ -29,6 +29,10 @@ module OpenSSL
     end
 
     def hexdigest
+      DigestBase.hexdump(digest)
+    end
+
+    def self.hexdump(digest)
       String.build do |buffer|
         digest.each do |i|
           buffer.printf("%02x", i)

@@ -22,3 +22,4 @@ end
 
 require "./*"
 require "./pkey/*"
+require "./x509/*"
