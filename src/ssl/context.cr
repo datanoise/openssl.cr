@@ -116,6 +116,12 @@ module OpenSSL::SSL
       set_certificate_file(file, FileType::PEM)
     end
 
+    def certificate_chain_file=(file)
+      if LibSSL.ssl_ctx_use_certificate_chain_file(self, file) == 0
+        raise SSLError.new "unable to load certificate chain"
+      end
+    end
+
     def certificate=(cert)
       if LibSSL.ssl_ctx_use_certificate(self, cert) == 0
         raise SSLError.new

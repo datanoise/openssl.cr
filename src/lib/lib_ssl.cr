@@ -49,6 +49,7 @@ lib LibSSL
   fun ssl_ctx_check_private_key = SSL_CTX_check_private_key(ctx: SSL_CTX) : Int32
   fun ssl_ctx_set_cipher_list = SSL_CTX_set_cipher_list(ctx: SSL_CTX, str: UInt8*) : Int32
   fun ssl_ctx_set_default_verify_paths = SSL_CTX_set_default_verify_paths(ctx: SSL_CTX) : Int32
+  fun ssl_ctx_use_certificate_chain_file = SSL_CTX_use_certificate_chain_file(ctx: SSL_CTX, file: UInt8*) : Int32
 
   SSL_CTRL_SET_READ_AHEAD = 41
   SSL_CTRL_EXTRA_CHAIN_CERT = 14

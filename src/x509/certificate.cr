@@ -31,6 +31,14 @@ module OpenSSL::X509
     def to_unsafe
       @handle
     end
+
+    def to_s(io)
+      io << name
+    end
+
+    def inspect(io)
+      io << "X509::Name [" << name << "]"
+    end
   end
 
   class Certificate
