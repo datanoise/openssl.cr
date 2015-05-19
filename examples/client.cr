@@ -10,7 +10,7 @@ TCPSocket.open("localhost", 5555) do |socket|
     certificate = store.certificate
     pp ok
     pp certificate.subject_name
-    ok
+    true
   end
   SSL::Socket.new_client(socket, ssl_ctx) do |client|
     client.write("hello world".to_slice)
