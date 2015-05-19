@@ -1,5 +1,6 @@
 require "../openssl"
 
+# Stolen from standard library :)
 struct OpenSSL::BIO
   CRYSTAL_BIO = begin
     crystal_bio = LibCrypto::BioMethod.new
