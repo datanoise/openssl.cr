@@ -199,7 +199,7 @@ module OpenSSL::SSL
     end
 
     private def ssl_ctx_set_options(option: ContextOptions)
-      LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_OPTIONS, option.value.to_i64, nil)
+      LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_OPTIONS, option.value, nil)
     end
   end
 end
