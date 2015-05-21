@@ -15,7 +15,7 @@ module OpenSSL::SSL
   end
 
   @[Flags]
-  enum ContextOptions
+  enum ContextOptions : Int64
     LEGACY_SERVER_CONNECT                  = 0x00000004
     NETSCAPE_REUSE_CIPHER_CHANGE_BUG       = 0x00000008
     TLSEXT_PADDING                         = 0x00000010
@@ -191,7 +191,7 @@ module OpenSSL::SSL
     end
 
     private def ssl_ctx_clear_options(option: ContextOptions)
-      LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_CLEAR_OPTIONS, option.value.to_i64, nil)
+      LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_CLEAR_OPTIONS, option.value, nil)
     end
 
     private def ssl_ctx_get_options
