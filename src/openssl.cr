@@ -20,7 +20,6 @@ module OpenSSL
   LibSSL.ssl_load_error_strings()
 end
 
-require "./util/*"
 require "./digest/*"
 require "./bio/*"
 require "./pkey/*"
