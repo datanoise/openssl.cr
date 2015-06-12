@@ -68,6 +68,9 @@ lib LibSSL
   fun ssl_write = SSL_write(ssl: SSL, buf: UInt8*, num: Int32) : Int32
   fun ssl_shutdown = SSL_shutdown(ssl: SSL) : Int32
   fun ssl_get_peer_certificate = SSL_get_peer_certificate(ssl: SSL) : LibCrypto::X509
+  fun ssl_renegotiate = SSL_renegotiate(ssl: SSL) : Int32
+  fun ssl_pending = SSL_pending(ssl: SSL) : Int32
+  fun ssl_do_handshake = SSL_do_handshake(ssl: SSL) : Int32
 
   SSL_ERROR_NONE = 0
   SSL_ERROR_SSL = 1

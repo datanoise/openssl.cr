@@ -30,6 +30,18 @@ class OpenSSL::SSL::Socket
     end
   end
 
+  def do_handshake
+    LibSSL.ssl_do_handshake(self)
+  end
+
+  def pending
+    LibSSL.ssl_pending(self)
+  end
+
+  def renegotiate
+    LibSSL.ssl_renegotiate(self)
+  end
+
   def finalize
     LibSSL.ssl_free(self)
   end
