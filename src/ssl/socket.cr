@@ -31,7 +31,8 @@ class OpenSSL::SSL::Socket
   end
 
   def do_handshake
-    LibSSL.ssl_do_handshake(self)
+    ret = LibSSL.ssl_do_handshake(self)
+    check_error(ret)
   end
 
   def pending
@@ -39,7 +40,8 @@ class OpenSSL::SSL::Socket
   end
 
   def renegotiate
-    LibSSL.ssl_renegotiate(self)
+    ret = LibSSL.ssl_renegotiate(self)
+    check_error(ret)
   end
 
   def finalize
