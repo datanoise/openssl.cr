@@ -21,6 +21,7 @@ module OpenSSL
 end
 
 require "./digest/*"
+require "./cipher/*"
 require "./bio/*"
 require "./pkey/*"
 require "./x509/*"
