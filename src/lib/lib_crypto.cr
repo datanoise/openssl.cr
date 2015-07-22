@@ -1,7 +1,13 @@
 @[Link("crypto")]
 lib LibCrypto
+  # from headers
+  PKCS5_SALT_LEN = 8
+  EVP_MAX_KEY_LENGTH = 32
+  EVP_MAX_IV_LENGTH = 16
+
   fun err_error_string = ERR_error_string(e: UInt64, buf: UInt8*) : UInt8*
   fun get_error = ERR_get_error() : UInt64
+  fun cleanse = OPENSSL_cleanse(ptr : UInt8*, len : UInt32)
 
   alias EVP_MD = Void*
 
@@ -25,8 +31,28 @@ lib LibCrypto
   fun evp_md_block_size = EVP_MD_block_size(md: EVP_MD) : Int32
   fun evp_md_ctx_copy = EVP_MD_CTX_copy(dst: EVP_MD_CTX, src: EVP_MD_CTX) : Int32
 
-  alias EVP_PKEY = Void*
+  fun evp_bytestokey = EVP_BytesToKey(ctype : EVP_CIPHER, md : EVP_MD, salt : UInt8*, pass : UInt8*, passlen : Int32, iter : Int32, key : UInt8*, iv : UInt8*) : Int32
+
   alias EVP_CIPHER = Void*
+  alias EVP_CIPHER_CTX = Void*
+
+  fun evp_get_cipherbyname = EVP_get_cipherbyname(name : UInt8*) : EVP_CIPHER
+
+  fun evp_cipher_name = EVP_CIPHER_name(cipher : EVP_CIPHER) : UInt8*
+  fun evp_cipher_nid = EVP_CIPHER_nid(cipher : EVP_CIPHER) : Int32
+  fun evp_cipher_block_size = EVP_CIPHER_block_size(cipher : EVP_CIPHER) : Int32
+  fun evp_cipher_key_length = EVP_CIPHER_key_length(cipher : EVP_CIPHER) : Int32
+  fun evp_cipher_iv_length = EVP_CIPHER_iv_length(cipher : EVP_CIPHER) : Int32
+
+  fun evp_cipher_ctx_new = EVP_CIPHER_CTX_new() : EVP_CIPHER_CTX
+  fun evp_cipher_ctx_free = EVP_CIPHER_CTX_free(ctx : EVP_CIPHER_CTX)
+  fun evp_cipherinit_ex = EVP_CipherInit_ex(ctx : EVP_CIPHER_CTX, type : EVP_CIPHER, engine : Void*, key : UInt8*, iv : UInt8*, enc : Int32) : Int32
+  fun evp_cipherupdate = EVP_CipherUpdate(ctx : EVP_CIPHER_CTX, out : UInt8*, outl : Int32*, in : UInt8*, inl : Int32) : Int32
+  fun evp_cipherfinal_ex = EVP_CipherFinal_ex(ctx : EVP_CIPHER_CTX, out : UInt8*, outl : Int32*) : Int32
+  fun evp_cipher_ctx_set_padding = EVP_CIPHER_CTX_set_padding(ctx : EVP_CIPHER_CTX, padding : Int32) : Int32
+  fun evp_cipher_ctx_cipher = EVP_CIPHER_CTX_cipher(ctx : EVP_CIPHER_CTX) : EVP_CIPHER
+
+  alias EVP_PKEY = Void*
 
   fun evp_pkey_size = EVP_PKEY_size(pkey: EVP_PKEY) : Int32
   fun evp_signfinal = EVP_SignFinal(ctx: EVP_MD_CTX, sigret: UInt8*, siglen: UInt32*, pkey: EVP_PKEY) : Int32
