@@ -1,3 +1,5 @@
+require "../openssl"
+
 class OpenSSL::Cipher
   class Error < OpenSSL::OpenSSLError
   end
@@ -20,7 +22,7 @@ class OpenSSL::Cipher
   def encrypt
     cipherinit enc: 1
   end
-  
+
   def decrypt
     cipherinit enc: 0
   end
@@ -41,7 +43,7 @@ class OpenSSL::Cipher
     iv = SecureRandom.random_bytes key_len
     self.key = key
   end
-  
+
   def random_iv
     iv = SecureRandom.random_bytes iv_len
     self.iv = iv
@@ -76,7 +78,7 @@ class OpenSSL::Cipher
 
   def reset
     cipherinit
-  end  
+  end
 
   def update in, outa = nil
     ina = case in
@@ -131,11 +133,11 @@ class OpenSSL::Cipher
   def block_size
     LibCrypto.evp_cipher_block_size cipher
   end
-  
+
   def key_len
     LibCrypto.evp_cipher_key_length cipher
   end
-  
+
   def iv_len
     LibCrypto.evp_cipher_iv_length cipher
   end
@@ -151,7 +153,7 @@ class OpenSSL::Cipher
     if LibCrypto.evp_cipherinit_ex(@ctx, cipher, engine, key, iv, enc) != 1
       raise Error.new "EVP_CipherInit_ex"
     end
-    
+
     nil
   end
 
