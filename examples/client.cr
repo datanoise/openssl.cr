@@ -17,7 +17,6 @@ TCPSocket.open("localhost", 5555) do |socket|
     buf :: UInt8[512]
     slice = buf.to_slice
     len = client.read(slice)
-    puts "From server: #{String.new slice[0,len]}"
+    puts "From server: #{String.new slice[0, len]}"
   end
 end
-

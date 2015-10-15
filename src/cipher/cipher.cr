@@ -16,8 +16,8 @@ class OpenSSL::Cipher
     cipherinit cipher: cipher, key: "\0" * LibCrypto::EVP_MAX_KEY_LENGTH
   end
 
-# auth_tag, auth_tag=
-# authenticated?
+  # auth_tag, auth_tag=
+  # authenticated?
 
   def encrypt
     cipherinit enc: 1
@@ -54,11 +54,11 @@ class OpenSSL::Cipher
     raise "salt must be an 8-octet string" if salt != Pointer(UInt8).null && salt.bytesize != LibCrypto::PKCS5_SALT_LEN
 
     md = case digest
-    when Digest
-      LibCrypto.evp_md_ctx_md(digest)
-    else
-      LibCrypto.evp_get_digestbyname(digest)
-    end
+         when Digest
+           LibCrypto.evp_md_ctx_md(digest)
+         else
+           LibCrypto.evp_get_digestbyname(digest)
+         end
     raise ArgumentError.new "unknown digest #{digest.inspect}" unless md
 
     key = Array(UInt8).new(LibCrypto::EVP_MAX_KEY_LENGTH)
@@ -80,40 +80,39 @@ class OpenSSL::Cipher
     cipherinit
   end
 
-  def update in, outa = nil
+  def update in : (String | Array(UInt8)), outa = nil
     ina = case in
-    when String
-      in.bytes
-    else
-      in
+          when String
+            in.bytes
+          else
+            in
     end
 
-    outl = ina.length + block_size
+    length = ina.size + block_size
     if outa
-      outa.length = outl
+      outa[0..length]
     else
-      outa = Array(UInt8).new(outl)
+      outa = Array(UInt8).new(length)
     end
 
-    if LibCrypto.evp_cipherupdate(@ctx, outa, out outl, ina, ina.length) != 1
+    puts outa
+    if LibCrypto.evp_cipherupdate(@ctx, outa, out outl, ina, ina.size) != 1
       raise Error.new "EVP_CipherUpdate"
     end
 
-    outa.length = outl
+    puts outa[0..outl]
+
     outa
   end
 
   def final
-    outl = block_size
-    outa = Array(UInt8).new(outl)
+    outa = Array(UInt8).new(block_size)
 
     if LibCrypto.evp_cipherfinal_ex(@ctx, outa, out outl) != 1
       raise Error.new "EVP_CipherFinal_ex"
     end
 
-    outa.length = outl
-
-    outa
+    outa[0..outl]
   end
 
   def padding= pad : Bool

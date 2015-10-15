@@ -5,11 +5,11 @@ module OpenSSL
   class PKey::DSA < PKey
     class DSAError < PKeyError; end
 
-    def self.new(pem: String, password = nil)
+    def self.new(pem : String, password = nil)
       self.new(StringIO.new(pem), password)
     end
 
-    def self.new(io: IO, password = nil)
+    def self.new(io : IO, password = nil)
       bio = MemBIO.new
       IO.copy(io, bio)
       priv_key = true
@@ -67,13 +67,13 @@ module OpenSSL
     end
 
     def to_der
-      fn = ->(buf: UInt8**|Nil) {
-        if private_key?
-          LibCrypto.i2d_dsaprivatekey(dsa, buf)
-        else
-          LibCrypto.i2d_dsa_pubkey(dsa, buf)
-        end
-      }
+      fn = ->(buf : UInt8** | Nil) {
+             if private_key?
+               LibCrypto.i2d_dsaprivatekey(dsa, buf)
+             else
+               LibCrypto.i2d_dsa_pubkey(dsa, buf)
+             end
+           }
       len = fn.call(nil)
       if len <= 0
         raise DSAError.new
@@ -99,7 +99,7 @@ module OpenSSL
       end
       data = data.to_slice
       to = Slice(UInt8).new max_encrypt_size
-      if LibCrypto.dsa_sign(0, data, data.length, to, out len, dsa) == 0
+      if LibCrypto.dsa_sign(0, data, data.size, to, out len, dsa) == 0
         raise DSAError.new
       end
       to[0, len]
@@ -108,7 +108,7 @@ module OpenSSL
     def dsa_verify(digest, signature)
       digest = digest.to_slice
       signature = signature.to_slice
-      case LibCrypto.dsa_verify(0, digest, digest.length, signature, signature.length, dsa)
+      case LibCrypto.dsa_verify(0, digest, digest.size, signature, signature.size, dsa)
       when 1
         true
       when 0

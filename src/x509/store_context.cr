@@ -1,7 +1,7 @@
 class OpenSSL::X509::StoreContext
   class StoreContextError < OpenSSLError; end
 
-  def initialize(@ctx: LibCrypto::X509_STORE_CTX)
+  def initialize(@ctx : LibCrypto::X509_STORE_CTX)
     raise StoreContextError.new "invalid handle" unless @ctx
   end
 

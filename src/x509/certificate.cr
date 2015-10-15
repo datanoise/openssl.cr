@@ -12,7 +12,7 @@ module OpenSSL::X509
       SEP_MULTILINE  = 4 << 16
     end
 
-    def initialize(@handle: LibCrypto::X509_NAME)
+    def initialize(@handle : LibCrypto::X509_NAME)
       raise X509Error.new "invalid handle" unless @handle
     end
 
@@ -42,7 +42,7 @@ module OpenSSL::X509
   end
 
   class Certificate
-    def initialize(@handle: LibCrypto::X509)
+    def initialize(@handle : LibCrypto::X509)
       raise X509Error.new "invalid handle" unless @handle
     end
 
@@ -79,7 +79,7 @@ module OpenSSL::X509
       if LibCrypto.x509_digest(self, digest.to_unsafe_md, slice, out len) == 0
         raise X509Error.new
       end
-      if len != slice.length
+      if len != slice.size
         raise X509Error.new "Fingerprint is corrupted"
       end
       slice

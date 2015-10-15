@@ -11,8 +11,8 @@ describe OpenSSL::Cipher do
     data = "DATA" * 5
     ciphertext = File.read(File.dirname(__FILE__) + "/cipher_spec.ciphertext").bytes
 
-#    c1.encrypt.pkcs5_keyivgen(key, iv)
-#    c2.encrypt.pkcs5_keyivgen(key, iv)
+    #    c1.encrypt.pkcs5_keyivgen(key, iv)
+    #    c2.encrypt.pkcs5_keyivgen(key, iv)
 
     c1.name.should eq(c2.name)
 
@@ -25,6 +25,7 @@ describe OpenSSL::Cipher do
     s1 += c1.update("DATA" * 4)
     s1 += c1.final
     s2 = c2.update(data) + c2.final
+
     s1.should eq(ciphertext)
     s1.should eq(s2)
 

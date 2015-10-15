@@ -21,7 +21,7 @@ module OpenSSL
 
     getter name
 
-    def initialize(@name, @ctx: LibCrypto::EVP_MD_CTX)
+    def initialize(@name, @ctx : LibCrypto::EVP_MD_CTX)
       raise DigestError.new("Invalid EVP_MD_CTX") unless @ctx
     end
 
@@ -35,7 +35,7 @@ module OpenSSL
       unless md
         raise "Unsupported digest algoritm: #{name}"
       end
-      ctx = LibCrypto.evp_md_ctx_create()
+      ctx = LibCrypto.evp_md_ctx_create
       unless ctx
         raise OpenSSL::Digest::DigestError.new "Digest initialization failed."
       end
@@ -54,7 +54,7 @@ module OpenSSL
     end
 
     def clone
-      ctx = LibCrypto.evp_md_ctx_create()
+      ctx = LibCrypto.evp_md_ctx_create
       if LibCrypto.evp_md_ctx_copy(ctx, @ctx) == 0
         LibCrypto.evp_md_ctx_destroy(ctx)
         raise DigestError.new("Unable to clone digest")
@@ -69,8 +69,8 @@ module OpenSSL
       self
     end
 
-    def update(data: String | Slice)
-      LibCrypto.evp_digestupdate(self, data, LibC::SizeT.cast(data.length))
+    def update(data : String | Slice)
+      LibCrypto.evp_digestupdate(self, data, LibC::SizeT.cast(data.size.to_u64))
       self
     end
 

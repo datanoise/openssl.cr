@@ -52,4 +52,3 @@ describe OpenSSL::PKey::RSA do
     rsa.verify(digest, signature[0, 10], data).should be_false
   end
 end
-
