@@ -21,7 +21,7 @@ describe OpenSSL::PKey::DSA do
     pem = MemoryIO.new
     dsa.to_pem(pem)
 
-    new_dsa = OpenSSL::PKey::DSA.new(pem)
+    new_dsa = OpenSSL::PKey::DSA.new(pem.to_s)
     dsa.to_pem.should eq(new_dsa.to_pem)
   end
 

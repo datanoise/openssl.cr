@@ -38,7 +38,7 @@ describe OpenSSL::PKey::RSA do
     pem = MemoryIO.new
     rsa.to_pem(pem)
 
-    new_rsa = OpenSSL::PKey::RSA.new(pem)
+    new_rsa = OpenSSL::PKey::RSA.new(pem.to_s)
     rsa.to_pem.should eq(new_rsa.to_pem)
   end
 
