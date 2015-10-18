@@ -24,22 +24,21 @@ class Cipher
 
     outa = Slice(UInt8).new(block_size)
 
-    if LibCrypto.evp_cipherupdate(@ctx, outa.to_unsafe, out outl, ina.pointer(0), ina.size) != 1
+    if LibCrypto.evp_cipherupdate(@ctx, outa, out outl, ina.pointer(0), ina.size) != 1
       raise Error.new "EVP_CipherUpdate"
     end
-    puts outl
 
-    outa
+    outa[0,outl]
   end
 
   def final
     outa = Slice(UInt8).new(block_size)
 
-    if LibCrypto.evp_cipherfinal_ex(@ctx, outa.to_unsafe, out outl) != 1
+    if LibCrypto.evp_cipherfinal_ex(@ctx, outa, out outl) != 1
       raise Error.new "EVP_CipherFinal_ex"
     end
 
-    outa
+    outa[0,outl]
   end
 
   def block_size
@@ -74,6 +73,10 @@ cipher = Cipher.new
 output = MemoryIO.new
 
 puts File.read("./spec/cipher_spec.ciphertext").bytes
-output.write(cipher.update("DATA" * 5))
+output.write(cipher.update("DATA"))
+output.write(cipher.update("DATA"))
+output.write(cipher.update("DATA"))
+output.write(cipher.update("DATA"))
+output.write(cipher.update("DATA"))
 output.write(cipher.final)
 puts output.to_slice

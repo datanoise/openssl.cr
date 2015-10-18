@@ -9,7 +9,7 @@ describe OpenSSL::Cipher do
     key = "\0" * 16
     iv = "\0" * 16
     data = "DATA" * 5
-    ciphertext = File.read(File.dirname(__FILE__) + "/cipher_spec.ciphertext").bytes
+    ciphertext = File.read(File.dirname(__FILE__) + "/cipher_spec.ciphertext")
 
     #    c1.encrypt.pkcs5_keyivgen(key, iv)
     #    c2.encrypt.pkcs5_keyivgen(key, iv)
@@ -21,25 +21,30 @@ describe OpenSSL::Cipher do
     c1.key = c2.key = key
     c1.iv = c2.iv = iv
 
-    s1 = c1.update("DATA")
-    s1 += c1.update("DATA" * 4)
-    s1 += c1.final
-    s2 = c2.update(data) + c2.final
+    s1 = MemoryIO.new
+    s2 = MemoryIO.new
+    s1.write(c1.update("DATA"))
+    s1.write(c1.update("DATA" * 4))
+    s1.write(c1.final)
+    s2.write(c2.update(data))
+    s2.write(c2.final)
 
-    puts s2
-
-    s1.should eq(ciphertext)
-    s1.should eq(s2)
+    s1.to_slice.should eq(ciphertext.to_slice)
+    s1.to_slice.should eq(s2.to_slice)
 
     c1.decrypt
     c2.decrypt
     c1.key = c2.key = key
     c1.iv = c2.iv = iv
 
-    buf = Array(UInt8).new(1)
-    s1 = c1.update(s1, buf) + c1.final
-    s2 = c2.update(s2) + c2.final
-    String.new(s1.buffer).should eq(data)
-    s1.should eq(s2)
+    s3 = MemoryIO.new
+    s4 = MemoryIO.new
+    s3.write(c1.update(s1.to_slice))
+    s3.write(c1.final)
+
+    s4.write(c2.update(s2.to_slice))
+    s4.write(c2.final)
+    String.new(s3.buffer).should eq(data)
+    s3.to_slice.should eq(s4.to_slice)
   end
 end

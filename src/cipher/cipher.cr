@@ -80,44 +80,32 @@ class OpenSSL::Cipher
     cipherinit
   end
 
-  def update in, outa = nil
+  def update in
     ina = case in
           when String
-            in.bytes
+            in.to_slice
           else
             in
           end
 
     outl = ina.size + block_size
-    if outa
-      outa[0..outl]
-    else
-      outa = Slice(UInt8).new(outl)
-    end
-
-    puts outl
+    outa = Slice(UInt8).new(outl)
     if LibCrypto.evp_cipherupdate(@ctx, outa, pointerof(outl), ina, ina.size) != 1
       raise Error.new "EVP_CipherUpdate"
     end
 
-    puts outa
-
-    # outa[0..outl]
-
-    outa.to_a
+    outa[0, outl]
   end
 
   def final
     outl = block_size
-    outa = Array(UInt8).new(outl)
+    outa = Slice(UInt8).new(outl)
 
     if LibCrypto.evp_cipherfinal_ex(@ctx, outa, pointerof(outl)) != 1
       raise Error.new "EVP_CipherFinal_ex"
     end
 
-    outa[0..outl]
-
-    outa
+    outa[0 ,outl]
   end
 
   def padding= pad : Bool
