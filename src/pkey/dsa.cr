@@ -6,7 +6,7 @@ module OpenSSL
     class DSAError < PKeyError; end
 
     def self.new(pem : String, password = nil)
-      self.new(StringIO.new(pem), password)
+      self.new(MemoryIO.new(pem), password)
     end
 
     def self.new(io : IO, password = nil)

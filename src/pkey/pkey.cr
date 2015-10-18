@@ -59,7 +59,7 @@ module OpenSSL
     end
 
     def to_pem
-      io = StringIO.new
+      io = MemoryIO.new
       to_pem(io)
       io.to_s
     end

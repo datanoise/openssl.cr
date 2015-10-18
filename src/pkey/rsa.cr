@@ -5,7 +5,7 @@ module OpenSSL
     class RSAError < PKeyError; end
 
     def self.new(pem : String, password = nil)
-      self.new(StringIO.new(io), password)
+      self.new(MemoryIO.new(io), password)
     end
 
     def self.new(io : IO, password = nil)

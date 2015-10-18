@@ -18,7 +18,7 @@ describe OpenSSL::PKey::DSA do
 
   it "should be able to load DSA from pem" do
     dsa = OpenSSL::PKey::DSA.generate(1024)
-    pem = StringIO.new
+    pem = MemoryIO.new
     dsa.to_pem(pem)
 
     new_dsa = OpenSSL::PKey::DSA.new(pem)
