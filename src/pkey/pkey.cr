@@ -34,7 +34,7 @@ module OpenSSL
       end
       data = data.to_slice
       LibCrypto.evp_digestinit_ex(digest, digest.to_unsafe_md, nil)
-      LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.size.to_u64))
+      LibCrypto.evp_digestupdate(digest, data, data.size)
       size = LibCrypto.evp_pkey_size(self)
       slice = Slice(UInt8).new(size)
       if LibCrypto.evp_signfinal(digest, slice, out len, self) == 0
@@ -47,7 +47,7 @@ module OpenSSL
       data = data.to_slice
       signature = signature.to_slice
       LibCrypto.evp_digestinit_ex(digest, digest.to_unsafe_md, nil)
-      LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.size.to_u64))
+      LibCrypto.evp_digestupdate(digest, data, data.size)
       case LibCrypto.evp_verifyfinal(digest, signature, signature.size.to_u32, self)
       when 0
         false

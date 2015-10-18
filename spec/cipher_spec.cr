@@ -26,6 +26,8 @@ describe OpenSSL::Cipher do
     s1 += c1.final
     s2 = c2.update(data) + c2.final
 
+    puts s2
+
     s1.should eq(ciphertext)
     s1.should eq(s2)
 

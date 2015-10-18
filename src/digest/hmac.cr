@@ -33,7 +33,7 @@ class OpenSSL::HMAC
   end
 
   def update(data)
-    LibCrypto.hmac_update(self, data, LibC::SizeT.cast(data.bytesize.to_u64))
+    LibCrypto.hmac_update(self, data, data.size)
     self
   end
 
