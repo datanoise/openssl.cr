@@ -1,7 +1,7 @@
 require "../openssl"
 
 class OpenSSL::ASN1::Time
-  def initialize(@handle: LibCrypto::ASN1_TIME)
+  def initialize(@handle : LibCrypto::ASN1_TIME)
     raise OpenSSLError.new "Invalid handle" unless @handle
   end
 

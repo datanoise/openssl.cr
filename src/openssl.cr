@@ -8,16 +8,16 @@ module OpenSSL
     def initialize(msg = nil)
       unless (err = @err = LibCrypto.get_error) == 0
         @err_msg = String.new(LibCrypto.err_error_string(err, nil))
-        msg = msg ? "#{msg}: #{@err_msg}": @err_msg
+        msg = msg ? "#{msg}: #{@err_msg}" : @err_msg
       end
       super(msg)
     end
   end
 
-  LibSSL.ssl_library_init()
-  LibSSL.openssl_add_all_algorithms()
-  LibSSL.err_load_crypto_strings()
-  LibSSL.ssl_load_error_strings()
+  LibSSL.ssl_library_init
+  LibSSL.openssl_add_all_algorithms
+  LibSSL.err_load_crypto_strings
+  LibSSL.ssl_load_error_strings
 end
 
 require "./digest/*"

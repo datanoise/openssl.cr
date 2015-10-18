@@ -8,7 +8,7 @@ module OpenSSL
       end
     end
 
-    def update(io: IO)
+    def update(io : IO)
       buffer :: UInt8[2048]
       while (read_bytes = io.read(buffer.to_slice)) > 0
         self << buffer.to_slice
@@ -25,7 +25,7 @@ module OpenSSL
     end
 
     def base64digest
-      Base64.encode64(digest)
+      Base64.encode(digest)
     end
 
     def hexdigest

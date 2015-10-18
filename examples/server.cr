@@ -3,7 +3,7 @@ require "../src/openssl"
 
 include OpenSSL
 
-tcp_server = TCPServer.new( 5555 )
+tcp_server = TCPServer.new(5555)
 
 ssl_ctx = SSL::Context.new(SSL::Method::SSLv23)
 
@@ -24,4 +24,3 @@ loop do
     end
   end
 end
-
