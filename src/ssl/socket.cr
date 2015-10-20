@@ -3,14 +3,14 @@ require "../openssl"
 class OpenSSL::SSL::Socket
   include IO
 
-  def initialize(io, @context: Context)
+  def initialize(io, @context : Context)
     @handle = LibSSL.ssl_new(@context)
     raise SSLError.new "invalid handle" unless @handle
     @bio = BIO.new(io)
     LibSSL.ssl_set_bio(self, @bio, @bio)
   end
 
-  def self.new_client(io, context: Context)
+  def self.new_client(io, context : Context)
     socket = new(io, context)
     socket.connect
     begin
@@ -20,7 +20,7 @@ class OpenSSL::SSL::Socket
     end
   end
 
-  def self.new_server(io, context: Context)
+  def self.new_server(io, context : Context)
     socket = new(io, context)
     socket.accept
     begin

@@ -21,7 +21,7 @@ module OpenSSL
 
     getter name
 
-    def initialize(@name, @ctx: LibCrypto::EVP_MD_CTX)
+    def initialize(@name, @ctx : LibCrypto::EVP_MD_CTX)
       raise DigestError.new("Invalid EVP_MD_CTX") unless @ctx
     end
 
@@ -69,8 +69,8 @@ module OpenSSL
       self
     end
 
-    def update(data: String | Slice)
-      LibCrypto.evp_digestupdate(self, data, LibC::SizeT.cast(data.length))
+    def update(data : String | Slice)
+      LibCrypto.evp_digestupdate(self, data, LibC::SizeT.cast(data.bytesize.to_u64))
       self
     end
 

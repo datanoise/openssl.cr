@@ -35,8 +35,10 @@ describe OpenSSL::PKey::RSA do
 
   it "should be able to load RSA from pem" do
     rsa = OpenSSL::PKey::RSA.generate(1024)
-    pem = StringIO.new
+    pem = MemoryIO.new
     rsa.to_pem(pem)
+
+    pem.rewind
 
     new_rsa = OpenSSL::PKey::RSA.new(pem)
     rsa.to_pem.should eq(new_rsa.to_pem)

@@ -11,9 +11,6 @@ describe OpenSSL::Cipher do
     data = "DATA" * 5
     ciphertext = File.read(File.dirname(__FILE__) + "/cipher_spec.ciphertext").bytes
 
-#    c1.encrypt.pkcs5_keyivgen(key, iv)
-#    c2.encrypt.pkcs5_keyivgen(key, iv)
-
     c1.name.should eq(c2.name)
 
     c1.encrypt
@@ -33,8 +30,7 @@ describe OpenSSL::Cipher do
     c1.key = c2.key = key
     c1.iv = c2.iv = iv
 
-    buf = Array(UInt8).new(1)
-    s1 = c1.update(s1, buf) + c1.final
+    s1 = c1.update(s1) + c1.final
     s2 = c2.update(s2) + c2.final
     String.new(s1.buffer).should eq(data)
     s1.should eq(s2)

@@ -4,7 +4,7 @@ module OpenSSL
   abstract class PKey
     class PKeyError < OpenSSLError; end
 
-    def initialize(@pkey: LibCrypto::EVP_PKEY, @is_private = false)
+    def initialize(@pkey : LibCrypto::EVP_PKEY, @is_private = false)
       raise PKeyError.new "Invalid EVP_PKEY" unless @pkey
     end
 
@@ -34,7 +34,7 @@ module OpenSSL
       end
       data = data.to_slice
       LibCrypto.evp_digestinit_ex(digest, digest.to_unsafe_md, nil)
-      LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.length))
+      LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.bytesize.to_u64))
       size = LibCrypto.evp_pkey_size(self)
       slice = Slice(UInt8).new(size)
       if LibCrypto.evp_signfinal(digest, slice, out len, self) == 0
@@ -47,8 +47,8 @@ module OpenSSL
       data = data.to_slice
       signature = signature.to_slice
       LibCrypto.evp_digestinit_ex(digest, digest.to_unsafe_md, nil)
-      LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.length))
-      case LibCrypto.evp_verifyfinal(digest, signature, signature.length.to_u32, self)
+      LibCrypto.evp_digestupdate(digest, data, LibC::SizeT.cast(data.bytesize.to_u64))
+      case LibCrypto.evp_verifyfinal(digest, signature, signature.size.to_u32, self)
       when 0
         false
       when 1
@@ -59,7 +59,7 @@ module OpenSSL
     end
 
     def to_pem
-      io = StringIO.new
+      io = MemoryIO.new
       to_pem(io)
       io.to_s
     end

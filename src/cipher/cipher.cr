@@ -80,7 +80,7 @@ class OpenSSL::Cipher
     cipherinit
   end
 
-  def update in, outa = nil
+  def update in
     ina = case in
     when String
       in.bytes
@@ -88,32 +88,24 @@ class OpenSSL::Cipher
       in
     end
 
-    outl = ina.length + block_size
-    if outa
-      outa.length = outl
-    else
-      outa = Array(UInt8).new(outl)
-    end
+    outl = ina.size + 2*block_size
+    outa = Slice(UInt8).new(outl)
 
-    if LibCrypto.evp_cipherupdate(@ctx, outa, out outl, ina, ina.length) != 1
+    if LibCrypto.evp_cipherupdate(@ctx, outa, out out_size, ina, ina.size) != 1
       raise Error.new "EVP_CipherUpdate"
     end
 
-    outa.length = outl
-    outa
+    Array(UInt8).new(out_size) { |i| outa[i] }
   end
 
   def final
-    outl = block_size
-    outa = Array(UInt8).new(outl)
+    outa = Slice(UInt8).new(block_size)
 
     if LibCrypto.evp_cipherfinal_ex(@ctx, outa, out outl) != 1
       raise Error.new "EVP_CipherFinal_ex"
     end
 
-    outa.length = outl
-
-    outa
+    Array(UInt8).new(outl) {|i| outa[i]}
   end
 
   def padding= pad : Bool

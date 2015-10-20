@@ -57,11 +57,11 @@ module OpenSSL::SSL
                 index
               end
 
-    def initialize(@handle: LibSSL::SSL_CTX) 
+    def initialize(@handle : LibSSL::SSL_CTX) 
       raise SSLError.new "invalid handle" unless @handle
     end
 
-    def initialize(method: Method)
+    def initialize(method : Method)
       initialize(LibSSL.ssl_ctx_new(method.to_unsafe))
       if method == Method::DTLSv1 || method == Method::DTLSv1_2
         self.read_ahead = 1
@@ -72,12 +72,12 @@ module OpenSSL::SSL
       LibSSL.ssl_ctx_free(self)
     end
 
-    def set_verify(mode: VerifyMode, &block: VerifyCallback)
+    def set_verify(mode : VerifyMode, &block : VerifyCallback)
       LibSSL.ssl_ctx_set_ex_data(self, @@index, Box(VerifyCallback).box(block))
       LibSSL.ssl_ctx_set_verify(self, mode.value, ->Context.raw_verify)
     end
 
-    protected def self.raw_verify(preverify_ok: Int32, ctx: LibCrypto::X509_STORE_CTX)
+    protected def self.raw_verify(preverify_ok : Int32, ctx : LibCrypto::X509_STORE_CTX)
       idx = LibSSL.ssl_get_ex_data_x509_store_ctx_idx()
       ssl = LibSSL.x509_store_ctx_get_ex_data(ctx, idx)
       ssl_ctx = LibSSL.ssl_get_ssl_ctx(ssl)
@@ -106,7 +106,7 @@ module OpenSSL::SSL
       end
     end
 
-    def set_certificate_file(file, type: FileType)
+    def set_certificate_file(file, type : FileType)
       if LibSSL.ssl_ctx_use_certificate_file(self, file, type.value) == 0
         raise SSLError.new "unable to set certificate file"
       end
@@ -134,7 +134,7 @@ module OpenSSL::SSL
       end
     end
 
-    def set_private_key_file(file, type: FileType)
+    def set_private_key_file(file, type : FileType)
       if LibSSL.ssl_ctx_use_privatekey_file(self, file, type.value) == 0
         raise SSLError.new
       end
@@ -174,7 +174,7 @@ module OpenSSL::SSL
       ssl_ctx_get_options
     end
 
-    def clear_options(option: ContextOptions)
+    def clear_options(option : ContextOptions)
       ssl_ctx_clear_options(option)
     end
 
@@ -182,15 +182,15 @@ module OpenSSL::SSL
       @handle
     end
 
-    private def ssl_ctx_set_read_ahead(v: Int64)
+    private def ssl_ctx_set_read_ahead(v : Int64)
       LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_SET_READ_AHEAD, v, nil)
     end
 
-    private def ssl_ctx_add_extra_chain_cert(cert: X509::Certificate)
+    private def ssl_ctx_add_extra_chain_cert(cert : X509::Certificate)
       LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_EXTRA_CHAIN_CERT, 0_i64, cert.to_unsafe)
     end
 
-    private def ssl_ctx_clear_options(option: ContextOptions)
+    private def ssl_ctx_clear_options(option : ContextOptions)
       LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_CLEAR_OPTIONS, option.value, nil)
     end
 
@@ -198,7 +198,7 @@ module OpenSSL::SSL
       LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_OPTIONS, 0_i64, nil)
     end
 
-    private def ssl_ctx_set_options(option: ContextOptions)
+    private def ssl_ctx_set_options(option : ContextOptions)
       LibSSL.ssl_ctx_ctrl(self, LibSSL::SSL_CTRL_OPTIONS, option.value, nil)
     end
   end

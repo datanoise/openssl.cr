@@ -5,7 +5,7 @@ struct OpenSSL::MemBIO
 
   class BIOError < OpenSSLError; end
 
-  def initialize(@bio: LibCrypto::BIO)
+  def initialize(@bio : LibCrypto::BIO)
     raise BIOError.new "Invalid handle" unless @bio
   end
 
@@ -13,12 +13,12 @@ struct OpenSSL::MemBIO
     initialize LibCrypto.bio_new(LibCrypto.bio_s_mem())
   end
 
-  def read(data: Slice(UInt8), count)
-    LibCrypto.bio_read(self, data, count)
+  def read(data : Slice(UInt8))
+    LibCrypto.bio_read(self, data, data.size)
   end
 
-  def write(data: Slice(UInt8), count)
-    LibCrypto.bio_write(self, data, count)
+  def write(data : Slice(UInt8))
+    LibCrypto.bio_write(self, data, data.size)
   end
 
   def reset
@@ -30,7 +30,9 @@ struct OpenSSL::MemBIO
   end
 
   def to_string
-    self.read
+    buf = MemoryIO.new
+    IO.copy(self, buf)
+    buf.to_s
   end
 
   def to_unsafe

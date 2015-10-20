@@ -4,18 +4,18 @@ module OpenSSL
   class PKey::RSA < PKey
     class RSAError < PKeyError; end
 
-    def self.new(pem: String, password = nil)
-      self.new(StringIO.new(io), password)
+    def self.new(pem : String, password = nil)
+      self.new(MemoryIO.new(io), password)
     end
 
-    def self.new(io: IO, password = nil)
+    def self.new(io : IO, password = nil)
       bio = MemBIO.new
       IO.copy(io, bio)
       # FIXME: password callback
       new(LibCrypto.pem_read_bio_privatekey(bio, nil, nil, nil), true)
     end
 
-    def self.new(size: Int32)
+    def self.new(size : Int32)
       self.generate(size)
     end
 
@@ -43,11 +43,11 @@ module OpenSSL
 
     def public_encrypt(data, padding = LibCrypto::Padding::PKCS1_PADDING)
       from = data.to_slice
-      if max_encrypt_size < from.length
+      if max_encrypt_size < from.size
         raise RSAError.new "value is too big to be encrypted"
       end
       to = Slice(UInt8).new max_encrypt_size
-      len = LibCrypto.rsa_public_encrypt(from.length, from, to, rsa, padding)
+      len = LibCrypto.rsa_public_encrypt(from.size, from, to, rsa, padding)
       if len < 0
         raise RSAError.new "unable to encrypt"
       end
@@ -57,7 +57,7 @@ module OpenSSL
     def public_decrypt(data, padding = LibCrypto::Padding::PKCS1_PADDING)
       from = data.to_slice
       to = Slice(UInt8).new max_encrypt_size
-      len = LibCrypto.rsa_public_decrypt(from.length, from, to, rsa, padding)
+      len = LibCrypto.rsa_public_decrypt(from.size, from, to, rsa, padding)
       if len < 0
         raise RSAError.new "unable to decrypt"
       end
@@ -70,7 +70,7 @@ module OpenSSL
       end
       from = data.to_slice
       to = Slice(UInt8).new max_encrypt_size
-      len = LibCrypto.rsa_private_encrypt(from.length, from, to, rsa, padding)
+      len = LibCrypto.rsa_private_encrypt(from.size, from, to, rsa, padding)
       if len < 0
         raise RSAError.new "unable to encrypt"
       end
@@ -83,7 +83,7 @@ module OpenSSL
       end
       from = data.to_slice
       to = Slice(UInt8).new max_encrypt_size
-      len = LibCrypto.rsa_private_decrypt(from.length, from, to, rsa, padding)
+      len = LibCrypto.rsa_private_decrypt(from.size, from, to, rsa, padding)
       if len < 0
         raise RSAError.new "unable to decrypt"
       end
