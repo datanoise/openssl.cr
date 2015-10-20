@@ -70,7 +70,7 @@ module OpenSSL
     end
 
     def update(data : String | Slice)
-      LibCrypto.evp_digestupdate(self, data, LibC::SizeT.cast(data.bytesize.to_u64))
+      LibCrypto.evp_digestupdate(self, data, LibC::SizeT.new(data.bytesize))
       self
     end
 
