@@ -8,7 +8,7 @@ This library provides binding for OpenSSL library.
 
 # Requirements
 
-- Crystal language version 0.7.1 and higher.
+- Crystal language version 0.9 and higher.
 - openssl version 1.0.2a or higher
 
 On Mac OSX the default openssl is quite outdated. You can use `homebrew` to install the latest openssl:
