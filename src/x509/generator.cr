@@ -98,7 +98,7 @@ class OpenSSL::X509::Generator
   end
 
   private def random_serial
-    long :: Int64
+    long = uninitialized Int64
     ptr = pointerof(long) as Int32*
     ptr[0] = rand(UInt32::MAX)
     ptr[1] = rand(UInt32::MAX)

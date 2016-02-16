@@ -33,7 +33,7 @@ module OpenSSL
     end
 
     def self.generate(size)
-      seed :: UInt8[20]
+      seed = uninitialized UInt8[20]
       if LibCrypto.rand_bytes(seed.to_slice, 20) == 0
         raise DSAError.new
       end
