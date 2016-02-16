@@ -56,10 +56,18 @@ class OpenSSL::SSL::Socket
     LibSSL.ssl_accept(self)
   end
 
+  def read(slice : Slice(UInt8))
+    read(slice, slice.size)
+  end
+
   def read(slice : Slice(UInt8), count)
     ret = LibSSL.ssl_read(self, slice.pointer(count), count)
     check_error(ret)
     ret
+  end
+
+  def write(slice : Slice(UInt8))
+    write(slice, slice.size)
   end
 
   def write(slice : Slice(UInt8), count)

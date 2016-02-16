@@ -4,7 +4,7 @@ class OpenSSL::Cipher
   class Error < OpenSSL::OpenSSLError
   end
 
-  def initialize name
+  def initialize(name)
     cipher = LibCrypto.evp_get_cipherbyname name
     raise ArgumentError.new "unsupported cipher algorithm #{name.inspect}" unless cipher
 
@@ -16,8 +16,8 @@ class OpenSSL::Cipher
     cipherinit cipher: cipher, key: "\0" * LibCrypto::EVP_MAX_KEY_LENGTH
   end
 
-# auth_tag, auth_tag=
-# authenticated?
+  # auth_tag, auth_tag=
+  # authenticated?
 
   def encrypt
     cipherinit enc: 1
@@ -27,13 +27,13 @@ class OpenSSL::Cipher
     cipherinit enc: 0
   end
 
-  def key= key
+  def key=(key)
     raise ArgumentError.new "key length too short: wanted #{key_len}, got #{key.bytesize}" if key.bytesize < key_len
     cipherinit key: key
     key
   end
 
-  def iv= iv
+  def iv=(iv)
     raise ArgumentError.new "iv length too short: wanted #{iv_len}, got #{iv.bytesize}" if iv.bytesize < iv_len
     cipherinit iv: iv
     iv
@@ -50,15 +50,15 @@ class OpenSSL::Cipher
   end
 
   # PKCS5 v1.5 implementation
-  def pkcs5_keyivgen pass, salt = Pointer(UInt8).null, iter = 2048, digest = "md5"
+  def pkcs5_keyivgen(pass, salt = Pointer(UInt8).null, iter = 2048, digest = "md5")
     raise "salt must be an 8-octet string" if salt != Pointer(UInt8).null && salt.bytesize != LibCrypto::PKCS5_SALT_LEN
 
     md = case digest
-    when Digest
-      LibCrypto.evp_md_ctx_md(digest)
-    else
-      LibCrypto.evp_get_digestbyname(digest)
-    end
+         when Digest
+           LibCrypto.evp_md_ctx_md(digest)
+         else
+           LibCrypto.evp_get_digestbyname(digest)
+         end
     raise ArgumentError.new "unknown digest #{digest.inspect}" unless md
 
     key = Array(UInt8).new(LibCrypto::EVP_MAX_KEY_LENGTH)
@@ -80,13 +80,13 @@ class OpenSSL::Cipher
     cipherinit
   end
 
-  def update in
+  def update(in)
     ina = case in
-    when String
-      in.bytes
-    else
-      in
-    end
+          when String
+            in.bytes
+          else
+            in
+          end
 
     outl = ina.size + 2*block_size
     outa = Slice(UInt8).new(outl)
@@ -105,10 +105,10 @@ class OpenSSL::Cipher
       raise Error.new "EVP_CipherFinal_ex"
     end
 
-    Array(UInt8).new(outl) {|i| outa[i]}
+    Array(UInt8).new(outl) { |i| outa[i] }
   end
 
-  def padding= pad : Bool
+  def padding=(pad : Bool)
     if LibCrypto.evp_cipher_ctx_set_padding(@ctx, pad ? 1 : 0) != 1
       raise Error.new "EVP_CIPHER_CTX_set_padding"
     end
@@ -141,7 +141,7 @@ class OpenSSL::Cipher
 
   NULL = Pointer(Void).null
 
-  private def cipherinit cipher = NULL, engine = NULL, key = Pointer(UInt8).null, iv = Pointer(UInt8).null, enc = -1
+  private def cipherinit(cipher = NULL, engine = NULL, key = Pointer(UInt8).null, iv = Pointer(UInt8).null, enc = -1)
     if LibCrypto.evp_cipherinit_ex(@ctx, cipher, engine, key, iv, enc) != 1
       raise Error.new "EVP_CipherInit_ex"
     end

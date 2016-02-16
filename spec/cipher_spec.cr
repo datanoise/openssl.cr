@@ -32,7 +32,7 @@ describe OpenSSL::Cipher do
 
     s1 = c1.update(s1) + c1.final
     s2 = c2.update(s2) + c2.final
-    String.new(s1.buffer).should eq(data)
+    String.new(s1.to_unsafe).should eq(data)
     s1.should eq(s2)
   end
 end
