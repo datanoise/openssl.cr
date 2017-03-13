@@ -25,7 +25,7 @@ EOC
 
 describe Certificate do
   it "should be able to load certificate from PEM" do
-    certificate = Certificate.from_pem(MemoryIO.new(CERT))
+    certificate = Certificate.from_pem(IO::Memory.new(CERT))
     certificate.subject_name.name.should eq("CN=MyName")
     certificate.fingerprint_hex.should eq("454ed8ec8b5a21f785de57edb5318381bccc98cd")
   end
@@ -43,7 +43,7 @@ describe Generator do
     certificate.subject_name.name.should eq("CN=MyName")
     certificate.verify(pkey).should be_true
 
-    loaded_certificate = Certificate.from_pem(MemoryIO.new(certificate.to_pem))
+    loaded_certificate = Certificate.from_pem(IO::Memory.new(certificate.to_pem))
     loaded_certificate.subject_name.name.should eq("CN=MyName")
     loaded_certificate.fingerprint_hex.should eq(certificate.fingerprint_hex)
   end

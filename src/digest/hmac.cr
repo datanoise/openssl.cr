@@ -17,7 +17,7 @@ class OpenSSL::HMAC
 
   def self.new(key, digest)
     new.tap do |hmac|
-      LibCrypto.hmac_init_ex(hmac, key.to_unsafe as Pointer(Void), key.bytesize, digest.to_unsafe_md, nil)
+      LibCrypto.hmac_init_ex(hmac, key.to_unsafe.as(Pointer(Void)), key.bytesize, digest.to_unsafe_md, nil)
     end
   end
 

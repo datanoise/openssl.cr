@@ -104,7 +104,7 @@ module OpenSSL::X509
     end
 
     def to_pem
-      io = MemoryIO.new
+      io = IO::Memory.new
       to_pem(io)
       io.to_s
     end

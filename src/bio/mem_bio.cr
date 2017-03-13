@@ -30,7 +30,7 @@ class OpenSSL::MemBIO
   end
 
   def to_string
-    buf = MemoryIO.new
+    buf = IO::Memory.new
     IO.copy(self, buf)
     buf.to_s
   end
