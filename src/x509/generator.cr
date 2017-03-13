@@ -99,7 +99,7 @@ class OpenSSL::X509::Generator
 
   private def random_serial
     long = uninitialized Int64
-    ptr = pointerof(long) as Int32*
+    ptr = pointerof(long).as Int32*
     ptr[0] = rand(UInt32::MAX)
     ptr[1] = rand(UInt32::MAX)
     long
