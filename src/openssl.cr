@@ -3,7 +3,7 @@ require "./lib/lib_ssl"
 module OpenSSL
   class OpenSSLError < Exception
     getter err
-    getter err_msg
+    getter err_msg = ""
 
     def initialize(msg = nil)
       unless (err = @err = LibCrypto.get_error) == 0

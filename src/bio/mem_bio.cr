@@ -1,6 +1,6 @@
 require "../openssl"
 
-struct OpenSSL::MemBIO
+class OpenSSL::MemBIO
   include IO
 
   class BIOError < OpenSSLError; end
@@ -30,7 +30,7 @@ struct OpenSSL::MemBIO
   end
 
   def to_string
-    buf = MemoryIO.new
+    buf = IO::Memory.new
     IO.copy(self, buf)
     buf.to_s
   end

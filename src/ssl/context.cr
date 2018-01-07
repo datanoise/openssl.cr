@@ -49,6 +49,8 @@ module OpenSSL::SSL
   class Context
     alias VerifyCallback = (Bool, X509::StoreContext) -> Bool
 
+    @@index : Int32
+
     @@index = begin
                 index = LibSSL.ssl_ctx_get_ex_new_index(0_i64, nil, nil, nil, nil)
                 if index < 0
@@ -57,7 +59,7 @@ module OpenSSL::SSL
                 index
               end
 
-    def initialize(@handle : LibSSL::SSL_CTX) 
+    def initialize(@handle : LibSSL::SSL_CTX)
       raise SSLError.new "invalid handle" unless @handle
     end
 
