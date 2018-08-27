@@ -1,8 +1,6 @@
 require "../openssl"
 
 class OpenSSL::SSL::Socket
-  include IO
-
   def initialize(io, @context : Context)
     @handle = LibSSL.ssl_new(@context)
     raise SSLError.new "invalid handle" unless @handle

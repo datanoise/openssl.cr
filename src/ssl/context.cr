@@ -3,14 +3,14 @@ module OpenSSL::SSL
 
   @[Flags]
   enum VerifyMode
-    PEER = LibSSL::SSL_VERIFY_PEER
-    NONE = LibSSL::SSL_VERIFY_NONE
+    PEER                 = LibSSL::SSL_VERIFY_PEER
+    NONE                 = LibSSL::SSL_VERIFY_NONE
     FAIL_IF_NO_PEER_CERT = LibSSL::SSL_VERIFY_FAIL_IF_NO_PEER_CERT
   end
 
   enum FileType
-    PEM = LibSSL::X509_FILETYPE_PEM
-    ASN1 = LibSSL::X509_FILETYPE_ASN1
+    PEM     = LibSSL::X509_FILETYPE_PEM
+    ASN1    = LibSSL::X509_FILETYPE_ASN1
     DEFAULT = LibSSL::X509_FILETYPE_DEFAULT
   end
 
@@ -49,15 +49,16 @@ module OpenSSL::SSL
   class Context
     alias VerifyCallback = (Bool, X509::StoreContext) -> Bool
 
+    @@index : Int32
     @@index = begin
-                index = LibSSL.ssl_ctx_get_ex_new_index(0_i64, nil, nil, nil, nil)
-                if index < 0
-                  raise SSLError.new "invalid index"
-                end
-                index
-              end
+      index = LibSSL.ssl_ctx_get_ex_new_index(0, 0_i64, nil, nil, nil, nil)
+      if index < 0
+        raise SSLError.new "invalid index"
+      end
+      index
+    end
 
-    def initialize(@handle : LibSSL::SSL_CTX) 
+    def initialize(@handle : LibSSL::SSL_CTX)
       raise SSLError.new "invalid handle" unless @handle
     end
 
@@ -78,7 +79,7 @@ module OpenSSL::SSL
     end
 
     protected def self.raw_verify(preverify_ok : Int32, ctx : LibCrypto::X509_STORE_CTX)
-      idx = LibSSL.ssl_get_ex_data_x509_store_ctx_idx()
+      idx = LibSSL.ssl_get_ex_data_x509_store_ctx_idx
       ssl = LibSSL.x509_store_ctx_get_ex_data(ctx, idx)
       ssl_ctx = LibSSL.ssl_get_ssl_ctx(ssl)
       verify = LibSSL.ssl_ctx_get_ex_data(ssl_ctx, @@index)

@@ -3,7 +3,7 @@ require "../src/openssl"
 
 include OpenSSL
 
-tcp_server = TCPServer.new( 5555 )
+tcp_server = TCPServer.new(5555)
 
 ssl_ctx = SSL::Context.new(SSL::Method::SSLv23)
 
@@ -13,7 +13,7 @@ ssl_ctx.private_key_file = "my_key.pem"
 loop do
   client = tcp_server.accept
   SSL::Socket.new_server(client, ssl_ctx) do |client|
-    buf :: UInt8[512]
+    buf = uninitialized UInt8[512]
     loop do
       len = client.read(buf.to_slice)
       if len > 0
@@ -24,4 +24,3 @@ loop do
     end
   end
 end
-

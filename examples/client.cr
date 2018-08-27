@@ -14,10 +14,9 @@ TCPSocket.open("localhost", 5555) do |socket|
   end
   SSL::Socket.new_client(socket, ssl_ctx) do |client|
     client.write("hello world".to_slice)
-    buf :: UInt8[512]
+    buf = uninitialized UInt8[512]
     slice = buf.to_slice
     len = client.read(slice)
-    puts "From server: #{String.new slice[0,len]}"
+    puts "From server: #{String.new slice[0, len]}"
   end
 end
-
