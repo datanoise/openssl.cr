@@ -16,7 +16,7 @@ module OpenSSL::X509
       raise X509Error.new "invalid handle" unless @handle
     end
 
-    def name(flag = Flags::COMPAT : Flags)
+    def name(flag : Flags = Flags::COMPAT)
       bio = MemBIO.new
       if LibCrypto.x509_name_print_ex(bio, self, 0, flag.value.to_u64) == 0
         raise X509Error.new
@@ -74,7 +74,7 @@ module OpenSSL::X509
       Name.new LibCrypto.x509_name_dup(handle)
     end
 
-    def fingerprint(digest = OpenSSL::Digest::SHA1.new : OpenSSL::Digest)
+    def fingerprint(digest : OpenSSL::Digest = OpenSSL::Digest::SHA1.new)
       slice = Slice(UInt8).new digest.digest_size
       if LibCrypto.x509_digest(self, digest.to_unsafe_md, slice, out len) == 0
         raise X509Error.new
@@ -85,7 +85,7 @@ module OpenSSL::X509
       slice
     end
 
-    def fingerprint_hex(digest = OpenSSL::Digest::SHA1.new : OpenSSL::Digest)
+    def fingerprint_hex(digest : OpenSSL::Digest = OpenSSL::Digest::SHA1.new)
       DigestBase.hexdump(fingerprint(digest))
     end
 
@@ -104,7 +104,7 @@ module OpenSSL::X509
     end
 
     def to_pem
-      io = MemoryIO.new
+      io = IO::Memory.new
       to_pem(io)
       io.to_s
     end

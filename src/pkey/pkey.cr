@@ -9,7 +9,7 @@ module OpenSSL
     end
 
     def initialize(is_private)
-      initialize(LibCrypto.evp_pkey_new(), is_private)
+      initialize(LibCrypto.evp_pkey_new, is_private)
     end
 
     def to_unsafe
@@ -59,7 +59,7 @@ module OpenSSL
     end
 
     def to_pem
-      io = MemoryIO.new
+      io = IO::Memory.new
       to_pem(io)
       io.to_s
     end

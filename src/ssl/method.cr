@@ -13,19 +13,19 @@ enum OpenSSL::SSL::Method
     # when SSLv2
     #   LibSSL.sslv2_method()
     when SSLv23
-      LibSSL.sslv23_method()
+      LibSSL.sslv23_method
     when SSLv3
-      LibSSL.sslv3_method()
+      LibSSL.sslv3_method
     when TLSv1
-      LibSSL.tlsv1_method()
+      LibSSL.tlsv1_method
     when TLSv1_1
-      LibSSL.tlsv1_1_method()
+      LibSSL.tlsv1_1_method
     when TLSv1_2
-      LibSSL.tlsv1_2_method()
+      LibSSL.tlsv1_2_method
     when DTLSv1
-      LibSSL.dtlsv1_method()
+      LibSSL.dtlsv1_method
     when DTLSv1_2
-      LibSSL.dtlsv1_2_method()
+      LibSSL.dtlsv1_2_method
     end
   end
 end
